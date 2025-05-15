@@ -1,12 +1,8 @@
-import { fail } from '@sveltejs/kit';
-import type { Actions } from './$types';
-export const actions = {
-  default: async (event) => {
-    const data = await event.request.formData()
-    const roll = data.get('roll')?.toString() ?? ''
+import { redirect } from "@sveltejs/kit";
+import type { PageServerLoad } from "./$types";
 
-    if (!roll) {
-      return fail(400, { roll, missing: true });
-    }
-  }
-} satisfies Actions;
+
+// TODO: landing page
+export const load: PageServerLoad = async () => {
+  redirect(307, '/roll')
+}

@@ -5,11 +5,22 @@ type Tag = "Dice" | "Add" | "Subtract" | "Constant"
 interface BaseAST {
   tag: Tag
 }
+type DiceType = 2 | 4 | 6 | 8 | 10 | 12 | 20 | 100
+const allowedDice: Record<DiceType, null> = {
+  2: null,
+  4: null,
+  6: null,
+  8: null,
+  10: null,
+  12: null,
+  20: null,
+  100: null
+}
 
 interface Dice extends BaseAST {
   tag: "Dice"
   count: number
-  sides: number
+  sides: DiceType
 }
 
 interface Add extends BaseAST {
@@ -62,8 +73,10 @@ const map = <A, B>(p: Parser<A>, f: (a: A) => B): Parser<B> => input => {
 
 const number = map(regex(/^\d+/), Number);
 const dice = map(regex(/^\d+d\d+/), s => {
-  const [count, sides] = s.split('d').map(Number);
-  return { tag: "Dice", count, sides } as AST;
+  const [count, n]: number[] = s.split('d').map(Number);
+  // TODO: unhappy path programming in Effect or just Effect.Schema
+  // const sides: DiceType = new Set(Object.keys(allowedDice).map(Number)).has(n) ? n : undefined
+  return { tag: "Dice", count, sides: n } as AST;
 });
 const constant = map(number, value => ({ tag: "Constant", value } as AST));
 const parens = (expr: Parser<AST>): Parser<AST> =>
@@ -103,6 +116,7 @@ const evaluate = (node: AST): number => {
   switch (node.tag) {
     case "Dice": {
       const rolls = new Array(node.count).fill(0)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       return rolls.map(_ => randomDice(node.sides)).reduce((acc, curr) => acc + curr, 0)
     }
     case "Add":
