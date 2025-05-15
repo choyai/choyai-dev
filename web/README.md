@@ -20,6 +20,8 @@ npm run dev
     - [ ] dice
     - [ ] rolling physics
     - [ ] effects
+      - [ ] particle effects
+      - [ ] nat 20 / 1 effect
 - [ ] roll history (individual dice, mods, etc.)
 - [ ] saved custom rolls (Attack roll, rolls for checks)
 
