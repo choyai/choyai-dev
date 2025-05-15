@@ -1,21 +1,30 @@
 type AST = Dice | Add | Subtract | Constant
 
-type Dice = {
+type Tag = "Dice" | "Add" | "Subtract" | "Constant"
+
+interface BaseAST {
+  tag: Tag
+}
+
+interface Dice extends BaseAST {
   tag: "Dice"
   count: number
   sides: number
 }
-type Add = {
+
+interface Add extends BaseAST {
   tag: "Add"
   left: AST
   right: AST
 }
-type Subtract = {
+
+interface Subtract extends BaseAST {
   tag: "Subtract"
   left: AST
   right: AST
 }
-type Constant = {
+
+interface Constant extends BaseAST {
   tag: "Constant"
   value: number
 }
@@ -84,10 +93,29 @@ const expr: Parser<AST> = input => {
   return [left, rest];
 };
 
-// Usage:
 const parse = (s: string) => expr(s.trim())?.[0];
+
+const randomDice = (sides: number): number => {
+  return Math.min(Math.floor(Math.random() * (sides)) + 1, sides)
+}
+
+const evaluate = (node: AST): number => {
+  switch (node.tag) {
+    case "Dice": {
+      const rolls = new Array(node.count).fill(0)
+      return rolls.map(_ => randomDice(node.sides)).reduce((acc, curr) => acc + curr, 0)
+    }
+    case "Add":
+      return evaluate(node.left) + evaluate(node.right)
+    case "Subtract":
+      return evaluate(node.left) - evaluate(node.right)
+    case "Constant":
+      return node.value
+  }
+}
 
 export const Roll = {
   tokenize,
-  parse
+  parse,
+  evaluate
 }
