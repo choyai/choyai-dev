@@ -1,10 +1,19 @@
-<script  lang="ts">
-import RollInput from '$lib/component/RollInput.svelte'
-</script> 
+<script lang="ts">
+  import { enhance } from '$app/forms'
+  import RollInput from '$lib/component/RollInput.svelte'
+  import { Roll } from '$lib/model/roll'
 
-<div class="flex items-center h-screen">
-  <div class="m-auto">
-    Enter the dice you want to roll
-  </div>
-    <RollInput/>
+  let input = $state('')
+  let ast = $derived(Roll.parse(input))
+  let tokens = $derived(Roll.tokenize(input))
+</script>
+
+<div class="flex h-screen flex-col items-center justify-center gap-2">
+  <form method="POST" use:enhance>
+    <div class="">Enter the dice you want to roll</div>
+    <RollInput bind:input />
+    Your roll:
+    <pre>{JSON.stringify(ast)}</pre>
+    <pre>{JSON.stringify(tokens)}</pre>
+  </form>
 </div>
