@@ -3,17 +3,19 @@
   import RollInput from '$lib/component/RollInput.svelte'
   import { Roll } from '$lib/model/roll'
 
-  let input = $state('')
+  let input = $state('1d20 + 2')
   let ast = $derived(Roll.parse(input))
   let tokens = $derived(Roll.tokenize(input))
 </script>
 
-<div class="flex h-screen flex-col items-center justify-center gap-2">
-  <form method="POST" use:enhance>
+<div class="flex h-full flex-col items-center justify-center gap-2">
+  <form class="" method="POST" use:enhance>
     <div class="">Enter the dice you want to roll</div>
     <RollInput bind:input />
     Your roll:
-    <pre>{JSON.stringify(ast)}</pre>
-    <pre>{JSON.stringify(tokens)}</pre>
+    <div class="max-h-70 scrollbar-custom overflow-y-scroll">
+      <pre>{JSON.stringify(ast, null, 2)}</pre>
+      <pre>{JSON.stringify(tokens, null, 2)}</pre>
+    </div>
   </form>
 </div>
