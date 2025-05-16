@@ -1,7 +1,7 @@
 <script lang="ts">
   import RollInput from '$lib/components/RollInput.svelte'
   import { Roll } from '$lib/model/roll'
-  import { HTML, interactivity } from '@threlte/extras'
+  import { HTML, interactivity, Outlines, Edges } from '@threlte/extras'
   import { T, useTask } from '@threlte/core'
   import { Spring } from 'svelte/motion'
 
@@ -33,7 +33,7 @@
 />
 <T.DirectionalLight position={[0, 10, 10]} castShadow />
 <T.Mesh
-  position.y={1}
+  position.y={1.03}
   rotation.y={rotation}
   scale={scale.current}
   onpointerenter={() => {
@@ -44,8 +44,10 @@
   }}
   castShadow
 >
-  <T.BoxGeometry args={[1, 2, 1]} />
-  <T.MeshStandardMaterial color="hotpink" />
+  <T.BoxGeometry args={[1, 1, 1]} />
+  <T.MeshStandardMaterial color="#8888ff" />
+  <Edges color="white" scale={1.02} />
+  <Outlines color="white" />
 </T.Mesh>
 
 <T.Mesh rotation.x={-Math.PI / 2} receiveShadow>
