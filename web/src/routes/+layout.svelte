@@ -1,6 +1,6 @@
 <script lang="ts">
   import '../app.css'
-  let { children }  = $props()
+  let { children } = $props()
 </script>
 
 <title>choyai</title>

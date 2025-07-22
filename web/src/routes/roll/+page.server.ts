@@ -1,5 +1,5 @@
-import { fail } from '@sveltejs/kit';
-import type { Actions, PageServerLoad } from './$types';
+import { fail } from '@sveltejs/kit'
+import type { Actions, PageServerLoad } from './$types'
 
 export const load: PageServerLoad = ({ url }) => {
   const debug: boolean = url.searchParams.get('debug') !== null
@@ -15,7 +15,7 @@ export const actions = {
     const roll = data.get('roll')?.toString() ?? ''
 
     if (!roll) {
-      return fail(400, { roll, missing: true });
+      return fail(400, { roll, missing: true })
     }
   }
-} satisfies Actions;
+} satisfies Actions

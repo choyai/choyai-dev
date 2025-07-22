@@ -1,6 +1,6 @@
 type AST = Dice | Add | Subtract | Constant
 
-type Tag = "Dice" | "Add" | "Subtract" | "Constant"
+type Tag = 'Dice' | 'Add' | 'Subtract' | 'Constant'
 
 interface BaseAST {
   tag: Tag
@@ -18,118 +18,195 @@ const allowedDice: Record<DiceType, null> = {
 }
 
 interface Dice extends BaseAST {
-  tag: "Dice"
+  tag: 'Dice'
   count: number
   sides: DiceType
 }
 
 interface Add extends BaseAST {
-  tag: "Add"
+  tag: 'Add'
   left: AST
   right: AST
 }
 
 interface Subtract extends BaseAST {
-  tag: "Subtract"
+  tag: 'Subtract'
   left: AST
   right: AST
 }
 
 interface Constant extends BaseAST {
-  tag: "Constant"
+  tag: 'Constant'
   value: number
 }
 
 const tokenize = (input: string): string[] =>
-  input.match(/\s*(\d+d\d+|\d+|[()+-])\s*/g)?.map(t => t.trim()) || []
+  input.match(/\s*(\d+d\d+|\d+|[()+-])\s*/g)?.map((t) => t.trim()) || []
 
-type Parser<T> = (input: string) => [T, string] | null;
+type Parser<T> = (input: string) => [T, string] | null
 
-const regex = (r: RegExp): Parser<string> => input => {
-  const match = input.match(r);
-  return match ? [match[0], input.slice(match[0].length).trimStart()] : null;
-};
+const regex =
+  (r: RegExp): Parser<string> =>
+    (input) => {
+      const match = input.match(r)
+      return match ? [match[0], input.slice(match[0].length).trimStart()] : null
+    }
 
-const alt = <T>(...parsers: Parser<T>[]): Parser<T> => input => {
-  for (const p of parsers) {
-    const result = p(input);
-    if (result) return result;
-  }
-  return null;
-};
+const alt =
+  <T>(...parsers: Parser<T>[]): Parser<T> =>
+    (input) => {
+      for (const p of parsers) {
+        const result = p(input)
+        if (result) return result
+      }
+      return null
+    }
 
-const seq = <A, B>(pa: Parser<A>, pb: Parser<B>): Parser<[A, B]> => input => {
-  const resA = pa(input);
-  if (!resA) return null;
-  const resB = pb(resA[1]);
-  if (!resB) return null;
-  return [[resA[0], resB[0]], resB[1]];
-};
+const seq =
+  <A, B>(pa: Parser<A>, pb: Parser<B>): Parser<[A, B]> =>
+    (input) => {
+      const resA = pa(input)
+      if (!resA) return null
+      const resB = pb(resA[1])
+      if (!resB) return null
+      return [[resA[0], resB[0]], resB[1]]
+    }
 
-const map = <A, B>(p: Parser<A>, f: (a: A) => B): Parser<B> => input => {
-  const res = p(input);
-  return res ? [f(res[0]), res[1]] : null;
-};
+const map =
+  <A, B>(p: Parser<A>, f: (a: A) => B): Parser<B> =>
+    (input) => {
+      const res = p(input)
+      return res ? [f(res[0]), res[1]] : null
+    }
 
-const number = map(regex(/^\d+/), Number);
-const dice = map(regex(/^\d+d\d+/), s => {
-  const [count, n]: number[] = s.split('d').map(Number);
+const number = map(regex(/^\d+/), Number)
+const dice = map(regex(/^\d+d\d+/), (s) => {
+  const [count, n]: number[] = s.split('d').map(Number)
   // TODO: unhappy path programming in Effect or just Effect.Schema
   // const sides: DiceType = new Set(Object.keys(allowedDice).map(Number)).has(n) ? n : undefined
-  return { tag: "Dice", count, sides: n } as AST;
-});
-const constant = map(number, value => ({ tag: "Constant", value } as AST));
+  return { tag: 'Dice', count, sides: n } as AST
+})
+const constant = map(number, (value) => ({ tag: 'Constant', value }) as AST)
 const parens = (expr: Parser<AST>): Parser<AST> =>
-  map(seq(seq(regex(/^\(/), expr), regex(/^\)/)), ([[, ast]]) => ast);
+  map(seq(seq(regex(/^\(/), expr), regex(/^\)/)), ([[, ast]]) => ast)
 
-const primary = (expr: Parser<AST>): Parser<AST> => alt(dice, constant, parens(expr));
+const primary = (expr: Parser<AST>): Parser<AST> => alt(dice, constant, parens(expr))
 
-const operator = regex(/^[+-]/);
+const operator = regex(/^[+-]/)
 const binary = (left: AST, [op, right]: [string, AST]): AST => ({
   tag: op === '+' ? 'Add' : 'Subtract',
   left,
-  right,
-});
+  right
+})
 
-const expr: Parser<AST> = input => {
-  const res = primary(expr)(input);
-  if (!res) return null;
+const expr: Parser<AST> = (input) => {
+  const res = primary(expr)(input)
+  if (!res) return null
 
-  let [left, rest] = res;
+  let [left, rest] = res
 
   while (true) {
-    const next = seq(operator, primary(expr))(rest);
-    if (!next) break;
-    left = binary(left, next[0]);
-    rest = next[1];
+    const next = seq(operator, primary(expr))(rest)
+    if (!next) break
+    left = binary(left, next[0])
+    rest = next[1]
   }
-  return [left, rest];
-};
+  return [left, rest]
+}
 
-const parse = (s: string) => expr(s.trim())?.[0];
+const parse = (s: string) => expr(s.trim())?.[0]
 
 const randomDice = (sides: number): number => {
-  return Math.min(Math.floor(Math.random() * (sides)) + 1, sides)
+  return Math.min(Math.floor(Math.random() * sides) + 1, sides)
 }
 
 const evaluate = (node: AST): number => {
   switch (node.tag) {
-    case "Dice": {
+    case 'Dice': {
       const rolls = new Array(node.count).fill(0)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      return rolls.map(_ => randomDice(node.sides)).reduce((acc, curr) => acc + curr, 0)
+      return rolls.map((_) => randomDice(node.sides)).reduce((acc, curr) => acc + curr, 0)
     }
-    case "Add":
+    case 'Add':
       return evaluate(node.left) + evaluate(node.right)
-    case "Subtract":
+    case 'Subtract':
       return evaluate(node.left) - evaluate(node.right)
-    case "Constant":
+    case 'Constant':
       return node.value
+  }
+}
+
+interface RollResult {
+  id: string
+  expression: string
+  ast: AST
+  result: number
+  timestamp: Date
+  individualRolls?: number[]
+}
+
+const evaluateWithDetails = (node: AST): { result: number; rolls: number[] } => {
+  const rolls: number[] = []
+
+  const evaluate = (node: AST): number => {
+    switch (node.tag) {
+      case 'Dice': {
+        const diceRolls = new Array(node.count).fill(0).map((_) => randomDice(node.sides))
+        rolls.push(...diceRolls)
+        return diceRolls.reduce((acc, curr) => acc + curr, 0)
+      }
+      case 'Add':
+        return evaluate(node.left) + evaluate(node.right)
+      case 'Subtract':
+        return evaluate(node.left) - evaluate(node.right)
+      case 'Constant':
+        return node.value
+    }
+  }
+
+  return { result: evaluate(node), rolls }
+}
+
+class RollHistory {
+  private history: RollResult[] = []
+
+  roll(expression: string): RollResult | null {
+    const ast = parse(expression)
+    if (!ast) return null
+
+    const { result, rolls } = evaluateWithDetails(ast)
+    const rollResult: RollResult = {
+      id: crypto.randomUUID(),
+      expression,
+      ast,
+      result,
+      timestamp: new Date(),
+      individualRolls: rolls
+    }
+
+    this.history.unshift(rollResult)
+    return rollResult
+  }
+
+  getHistory(): RollResult[] {
+    return [...this.history]
+  }
+
+  clear(): void {
+    this.history = []
+  }
+
+  getLastRoll(): RollResult | null {
+    return this.history[0] || null
   }
 }
 
 export const Roll = {
   tokenize,
   parse,
-  evaluate
+  evaluate,
+  evaluateWithDetails,
+  History: RollHistory
 }
+
+export type { RollResult }

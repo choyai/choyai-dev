@@ -11,6 +11,7 @@ npm run dev
 ## /roll
 
 ### Goals:
+
 - [x] parse dnd rolls
   - [ ] re-implement with Effect
 - [ ] roll visual dice
@@ -24,4 +25,3 @@ npm run dev
       - [ ] nat 20 / 1 effect
 - [ ] roll history (individual dice, mods, etc.)
 - [ ] saved custom rolls (Attack roll, rolls for checks)
-
