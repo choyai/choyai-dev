@@ -1,6 +1,4 @@
-# Package Managers
-package-lock.json
+node_modules
+dist
+*.tsbuildinfo
 pnpm-lock.yaml
-yarn.lock
-bun.lock
-bun.lockb
