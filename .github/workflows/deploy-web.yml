@@ -1,0 +1,56 @@
+name: Deploy Web to S3
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  AWS_REGION: ap-southeast-1
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Enable devenv cachix
+        uses: cachix/cachix-action@v15
+        with:
+          name: devenv
+
+      - name: Install devenv
+        run: nix profile install nixpkgs#devenv
+
+      - name: Build web
+        run: devenv tasks run web:build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy to S3
+        run: |
+          aws s3 sync web/dist s3://${{ secrets.S3_BUCKET_NAME }} \
+            --delete \
+            --cache-control "public, max-age=31536000, immutable" \
+            --exclude "index.html"
+
+          aws s3 cp web/dist/index.html s3://${{ secrets.S3_BUCKET_NAME }}/index.html \
+            --cache-control "public, max-age=0, must-revalidate"
+

@@ -32,10 +32,16 @@
   # '';
 
   # https://devenv.sh/tasks/
-  # tasks = {
-  #   "myproj:setup".exec = "mytool build";
-  #   "devenv:enterShell".after = [ "myproj:setup" ];
-  # };
+  tasks = {
+    "web:build" = {
+      exec = ''
+        cd $DEVENV_ROOT/web
+        pnpm install --frozen-lockfile
+        pnpm run build
+      '';
+      description = "Build the web application";
+    };
+  };
 
   # https://devenv.sh/tests/
   # enterTest = ''
