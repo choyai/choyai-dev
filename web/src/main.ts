@@ -53,7 +53,7 @@ const view = (count: Model): Html =>
     div([Class('row')], [
     ]),
     footer([Class('footer')], [
-      a([Href('mailto:foo@bar.co'), Class('link')], ['choyaichaiyo [at] gmail [dot] com']),
+      a([Href('mailto:choyaichaiyo@gmail.com'), Class('link')], ['choyaichaiyo [at] gmail [dot] com']),
       a([Href('https://github.com/choyai'), Target('_blank'), Class('link')], ['github.com/choyai']),
     ]),
   ])
