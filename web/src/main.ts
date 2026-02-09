@@ -6,7 +6,7 @@ import { pushUrl, load } from 'foldkit/navigation'
 import { evo } from 'foldkit/struct'
 import { Url, toString as urlToString } from 'foldkit/url'
 
-import { main, Class, Html } from './html'
+import { main, Class, Html, footer, a, Href, Target, div } from './html'
 import { NoOp, LinkClicked, UrlChanged, Message } from './message'
 import { AppRoute, urlToAppRoute } from './route'
 import { navView } from './component/nav'
@@ -91,9 +91,13 @@ const view = (model: Model): Html => {
     }),
   )
 
-  return main([Class('page')], [
+  return div([Class('page')], [
     navView(model.route),
-    routeContent,
+    main([], [routeContent]),
+    footer([Class('footer')], [
+      a([Href('mailto:choyaichaiyo@gmail.com'), Class('link')], ['choyaichaiyo [at] gmail [dot] com']),
+      a([Href('https://github.com/choyai'), Target('_blank'), Class('link')], ['github.com/choyai']),
+    ]),
   ])
 }
 

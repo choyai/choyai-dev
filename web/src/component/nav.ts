@@ -9,13 +9,13 @@ export const navView = (currentRoute: AppRoute): Html =>
       li([], [
         a(
           [Href(homeRouter.build({})), Class(currentRoute._tag === 'Home' ? 'nav-link active' : 'nav-link')],
-          ['Home'],
+          ['home'],
         ),
       ]),
       li([], [
         a(
           [Href(rollRouter.build({})), Class(currentRoute._tag === 'Roll' ? 'nav-link active' : 'nav-link')],
-          ['Roll'],
+          ['roll'],
         ),
       ]),
     ]),
