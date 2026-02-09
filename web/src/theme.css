@@ -1,0 +1,44 @@
+:root {
+  /* Tokyo Night Color Palette */
+
+  /* Accent Colors */
+  --color-red: #f7768e;
+  --color-orange: #ff9e64;
+  --color-yellow: #e0af68;
+  --color-yellow-muted: #cfc9c2;
+  --color-green: #9ece6a;
+  --color-teal: #73daca;
+  --color-teal-light: #b4f9f8;
+  --color-cyan: #2ac3de;
+  --color-cyan-light: #7dcfff;
+  --color-blue: #7aa2f7;
+  --color-purple: #bb9af7;
+
+  /* Text Colors */
+  --color-fg: #c0caf5;
+  --color-fg-muted: #a9b1d6;
+  --color-fg-subtle: #9aa5ce;
+  --color-comment: #565f89;
+
+  /* Background Colors */
+  --color-bg-dark: #414868;
+  --color-bg-storm: #24283b;
+  --color-bg: #1a1b26;
+
+  /* Semantic Aliases */
+  --text-primary: var(--color-fg);
+  --text-secondary: var(--color-fg-muted);
+  --text-muted: var(--color-fg-subtle);
+  --text-dim: var(--color-comment);
+
+  --bg-primary: var(--color-bg);
+  --bg-elevated: var(--color-bg-storm);
+  --bg-surface: var(--color-bg-dark);
+
+  --accent-primary: var(--color-blue);
+  --accent-secondary: var(--color-purple);
+  --accent-success: var(--color-green);
+  --accent-warning: var(--color-orange);
+  --accent-error: var(--color-red);
+  --accent-info: var(--color-cyan);
+}

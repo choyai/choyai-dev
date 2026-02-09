@@ -1,0 +1,1 @@
+export { homeView } from './view'

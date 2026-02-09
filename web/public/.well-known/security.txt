@@ -1,0 +1,4 @@
+Contact: mailto:choyaichaiyo@gmail.com
+Contact: https://choyai.dev/
+Expires: 2026-12-31
+Preferred-Languages: en

@@ -1,3 +1,5 @@
+@import './theme.css';
+
 *,
 *::before,
 *::after {
@@ -25,6 +27,8 @@ body {
     'Helvetica Neue',
     Arial,
     sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 img,
@@ -60,7 +64,7 @@ h5,
 h6 {
   font-size: inherit;
   font-weight: inherit;
-  color: white;
+  color: var(--text-primary);
 }
 
 ol,
@@ -78,7 +82,6 @@ ul {
   justify-content: center;
   gap: 1.5rem;
   padding: 1.5rem;
-  background: #16161e;
 }
 
 .row {
@@ -93,14 +96,32 @@ ul {
 .display {
   font-size: 3.75rem;
   font-weight: bold;
-  color: white;
+}
+
+/* Content */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.label {
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
 }
 
 /* Button */
 
 .btn {
-  background: black;
-  color: white;
+  background: var(--bg-surface);
+  color: var(--text-primary);
   padding: 0.5rem 1rem;
   cursor: pointer;
   border: none;
@@ -108,5 +129,16 @@ ul {
 }
 
 .btn:hover {
-  background: #374151;
+  background: var(--bg-elevated);
+}
+
+/* Link */
+
+.link {
+  color: var(--text-dim);
+  transition: color 0.15s;
+}
+
+.link:hover {
+  color: var(--text-secondary);
 }

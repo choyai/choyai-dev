@@ -1,71 +1,114 @@
-import './footer.css'
+import './styles.css'
 
-import { Match as M, Schema } from 'effect'
+import { Effect, Match as M, Schema as S } from 'effect'
 import { Runtime } from 'foldkit'
-import { Html, html } from 'foldkit/html'
-import { ts } from 'foldkit/schema'
+import { pushUrl, load } from 'foldkit/navigation'
+import { evo } from 'foldkit/struct'
+import { Url, toString as urlToString } from 'foldkit/url'
+
+import { main, Class, Html } from './html'
+import { NoOp, LinkClicked, UrlChanged, Message } from './message'
+import { AppRoute, urlToAppRoute } from './route'
+import { navView } from './component/nav'
+import { homeView } from './page/home'
+import { RollModel, initialRollModel, updateRoll, rollView } from './page/roll'
+import { notFoundView } from './page/notFound'
 
 // MODEL
 
-const Model = Schema.Number
+const Model = S.Struct({
+  route: AppRoute,
+  roll: RollModel,
+})
+
 type Model = typeof Model.Type
 
-// MESSAGE
+// INIT
 
-const Decrement = ts('Decrement')
-const Increment = ts('Increment')
-const Reset = ts('Reset')
-
-const Message = Schema.Union(Decrement, Increment, Reset)
-
-type Decrement = typeof Decrement.Type
-type Increment = typeof Increment.Type
-type Reset = typeof Reset.Type
-
-export type Message = typeof Message.Type
+const init: Runtime.ApplicationInit<Model, Message> = (url: Url) => [
+  {
+    route: urlToAppRoute(url),
+    roll: initialRollModel,
+  },
+  [],
+]
 
 // UPDATE
 
 const update = (
-  count: Model,
+  model: Model,
   message: Message,
 ): [Model, ReadonlyArray<Runtime.Command<Message>>] =>
   M.value(message).pipe(
     M.withReturnType<[Model, ReadonlyArray<Runtime.Command<Message>>]>(),
     M.tagsExhaustive({
-      Decrement: () => [count - 1, []],
-      Increment: () => [count + 1, []],
-      Reset: () => [0, []],
+      NoOp: () => [model, []],
+
+      LinkClicked: ({ request }) =>
+        M.value(request).pipe(
+          M.tagsExhaustive({
+            Internal: ({ url }): [Model, ReadonlyArray<Runtime.Command<Message>>] => [
+              model,
+              [pushUrl(urlToString(url)).pipe(Effect.as(NoOp.make()))],
+            ],
+            External: ({ href }): [Model, ReadonlyArray<Runtime.Command<Message>>] => [
+              model,
+              [load(href).pipe(Effect.as(NoOp.make()))],
+            ],
+          }),
+        ),
+
+      UrlChanged: ({ url }) => [
+        evo(model, { route: () => urlToAppRoute(url) }),
+        [],
+      ],
+
+      SelectDice: (msg) => {
+        const [roll, cmds] = updateRoll(model.roll, msg)
+        return [evo(model, { roll: () => roll }), cmds]
+      },
+
+      RollDice: (msg) => {
+        const [roll, cmds] = updateRoll(model.roll, msg)
+        return [evo(model, { roll: () => roll }), cmds]
+      },
+
+      DiceRolled: (msg) => {
+        const [roll, cmds] = updateRoll(model.roll, msg)
+        return [evo(model, { roll: () => roll }), cmds]
+      },
     }),
   )
 
-// INIT
-
-const init: Runtime.ElementInit<Model, Message> = () => [0, []]
-
 // VIEW
 
-const { div, main, h1, button, footer, a, Class, OnClick, Href, Target } = html<Message>()
+const view = (model: Model): Html => {
+  const routeContent = M.value(model.route).pipe(
+    M.tagsExhaustive({
+      Home: homeView,
+      Roll: () => rollView(model.roll),
+      NotFound: ({ path }) => notFoundView(path),
+    }),
+  )
 
-const view = (count: Model): Html =>
-  main([Class('page')], [
-	  h1([Class('heading')], ['hello, my name is chaiyo']),
-    div([Class('row')], [
-    ]),
-    footer([Class('footer')], [
-      a([Href('mailto:choyaichaiyo@gmail.com'), Class('link')], ['choyaichaiyo [at] gmail [dot] com']),
-      a([Href('https://github.com/choyai'), Target('_blank'), Class('link')], ['github.com/choyai']),
-    ]),
+  return main([Class('page')], [
+    navView(model.route),
+    routeContent,
   ])
+}
 
 // RUN
 
-const element = Runtime.makeElement({
+const app = Runtime.makeApplication({
   Model,
   init,
   update,
   view,
   container: document.getElementById('root')!,
+  browser: {
+    onUrlRequest: (request) => LinkClicked.make({ request }),
+    onUrlChange: (url) => UrlChanged.make({ url }),
+  },
 })
 
-Runtime.run(element)
+Runtime.run(app)
