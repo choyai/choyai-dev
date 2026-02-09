@@ -1,18 +1,17 @@
-import './styles.css'
-
 import { Effect, Match as M, Schema as S } from 'effect'
 import { Runtime } from 'foldkit'
-import { pushUrl, load } from 'foldkit/navigation'
+import { load, pushUrl } from 'foldkit/navigation'
 import { evo } from 'foldkit/struct'
 import { Url, toString as urlToString } from 'foldkit/url'
 
-import { main, Class, Html, footer, a, Href, Target, div } from './html'
-import { NoOp, LinkClicked, UrlChanged, Message } from './message'
-import { AppRoute, urlToAppRoute } from './route'
 import { navView } from './component/nav'
+import { Class, Href, Html, Target, a, div, footer, main } from './html'
+import { LinkClicked, Message, NoOp, UrlChanged } from './message'
 import { homeView } from './page/home'
-import { RollModel, initialRollModel, updateRoll, rollView } from './page/roll'
 import { notFoundView } from './page/notFound'
+import { RollModel, initialRollModel, rollView, updateRoll } from './page/roll'
+import { AppRoute, urlToAppRoute } from './route'
+import './styles.css'
 
 // MODEL
 
@@ -35,10 +34,7 @@ const init: Runtime.ApplicationInit<Model, Message> = (url: Url) => [
 
 // UPDATE
 
-const update = (
-  model: Model,
-  message: Message,
-): [Model, ReadonlyArray<Runtime.Command<Message>>] =>
+const update = (model: Model, message: Message): [Model, ReadonlyArray<Runtime.Command<Message>>] =>
   M.value(message).pipe(
     M.withReturnType<[Model, ReadonlyArray<Runtime.Command<Message>>]>(),
     M.tagsExhaustive({
@@ -58,10 +54,7 @@ const update = (
           }),
         ),
 
-      UrlChanged: ({ url }) => [
-        evo(model, { route: () => urlToAppRoute(url) }),
-        [],
-      ],
+      UrlChanged: ({ url }) => [evo(model, { route: () => urlToAppRoute(url) }), []],
 
       SelectDice: (msg) => {
         const [roll, cmds] = updateRoll(model.roll, msg)
@@ -91,14 +84,26 @@ const view = (model: Model): Html => {
     }),
   )
 
-  return div([Class('page')], [
-    navView(model.route),
-    main([], [routeContent]),
-    footer([Class('footer')], [
-      a([Href('mailto:choyaichaiyo@gmail.com'), Class('link')], ['choyaichaiyo [at] gmail [dot] com']),
-      a([Href('https://github.com/choyai'), Target('_blank'), Class('link')], ['github.com/choyai']),
-    ]),
-  ])
+  return div(
+    [Class('page')],
+    [
+      navView(model.route),
+      main([], [routeContent]),
+      footer(
+        [Class('footer')],
+        [
+          a(
+            [Href('mailto:choyaichaiyo@gmail.com'), Class('link')],
+            ['choyaichaiyo [at] gmail [dot] com'],
+          ),
+          a(
+            [Href('https://github.com/choyai'), Target('_blank'), Class('link')],
+            ['github.com/choyai'],
+          ),
+        ],
+      ),
+    ],
+  )
 }
 
 // RUN

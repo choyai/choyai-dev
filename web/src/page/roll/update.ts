@@ -1,18 +1,26 @@
 import { Effect, Match as M, Option } from 'effect'
 import { Runtime } from 'foldkit'
 import { evo } from 'foldkit/struct'
-import type { RollModel, DiceType } from './model'
+
 import { DiceRolled, type RollMessage } from './message'
+import type { DiceType, RollModel } from './model'
 
 const diceMax = (dice: DiceType): number => {
   switch (dice) {
-    case 'd4': return 4
-    case 'd6': return 6
-    case 'd8': return 8
-    case 'd10': return 10
-    case 'd12': return 12
-    case 'd20': return 20
-    case 'd100': return 100
+    case 'd4':
+      return 4
+    case 'd6':
+      return 6
+    case 'd8':
+      return 8
+    case 'd10':
+      return 10
+    case 'd12':
+      return 12
+    case 'd20':
+      return 20
+    case 'd100':
+      return 100
   }
 }
 
@@ -43,10 +51,7 @@ export const updateRoll = (
       DiceRolled: ({ result }) => [
         evo(model, {
           rollResult: () => Option.some(result),
-          rollHistory: (history) => [
-            { dice: model.selectedDice, result },
-            ...history.slice(0, 9),
-          ],
+          rollHistory: (history) => [{ dice: model.selectedDice, result }, ...history.slice(0, 9)],
         }),
         [],
       ],

@@ -1,5 +1,6 @@
 import { Schema as S } from 'effect'
 import { ts } from 'foldkit/schema'
+
 import { DiceType } from './model'
 
 export const SelectDice = ts('SelectDice', { dice: DiceType })

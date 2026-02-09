@@ -21,10 +21,7 @@ export type AppRoute = typeof AppRoute.Type
 
 export const homeRouter = pipe(Route.root, Route.mapTo(HomeRoute))
 
-export const rollRouter = pipe(
-  literal('roll'),
-  Route.mapTo(RollRoute),
-)
+export const rollRouter = pipe(literal('roll'), Route.mapTo(RollRoute))
 
 const routeParser = Route.oneOf(rollRouter, homeRouter)
 
