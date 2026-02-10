@@ -2,11 +2,14 @@ import { Effect, Match as M, Schema as S } from 'effect'
 import { Runtime } from 'foldkit'
 import { load, pushUrl } from 'foldkit/navigation'
 import { evo } from 'foldkit/struct'
-import { Url, toString as urlToString } from 'foldkit/url'
+import type { Url } from 'foldkit/url'
+import { toString as urlToString } from 'foldkit/url'
 
 import { navView } from './component/nav'
-import { Class, Href, Html, Target, a, div, footer, main } from './html'
-import { LinkClicked, Message, NoOp, UrlChanged } from './message'
+import type { Html } from './html'
+import { Class, Href, Target, a, div, footer, main } from './html'
+import type { Message } from './message'
+import { LinkClicked, NoOp, UrlChanged } from './message'
 import { homeView } from './page/home'
 import { notFoundView } from './page/notFound'
 import { RollModel, initialRollModel, rollView, updateRoll } from './page/roll'
@@ -34,7 +37,10 @@ const init: Runtime.ApplicationInit<Model, Message> = (url: Url) => [
 
 // UPDATE
 
-const update = (model: Model, message: Message): [Model, ReadonlyArray<Runtime.Command<Message>>] =>
+const update = (
+  model: Model,
+  message: Message,
+): [Model, ReadonlyArray<Runtime.Command<Message>>] =>
   M.value(message).pipe(
     M.withReturnType<[Model, ReadonlyArray<Runtime.Command<Message>>]>(),
     M.tagsExhaustive({
@@ -43,18 +49,25 @@ const update = (model: Model, message: Message): [Model, ReadonlyArray<Runtime.C
       LinkClicked: ({ request }) =>
         M.value(request).pipe(
           M.tagsExhaustive({
-            Internal: ({ url }): [Model, ReadonlyArray<Runtime.Command<Message>>] => [
+            Internal: ({
+              url,
+            }): [Model, ReadonlyArray<Runtime.Command<Message>>] => [
               model,
               [pushUrl(urlToString(url)).pipe(Effect.as(NoOp.make()))],
             ],
-            External: ({ href }): [Model, ReadonlyArray<Runtime.Command<Message>>] => [
+            External: ({
+              href,
+            }): [Model, ReadonlyArray<Runtime.Command<Message>>] => [
               model,
               [load(href).pipe(Effect.as(NoOp.make()))],
             ],
           }),
         ),
 
-      UrlChanged: ({ url }) => [evo(model, { route: () => urlToAppRoute(url) }), []],
+      UrlChanged: ({ url }) => [
+        evo(model, { route: () => urlToAppRoute(url) }),
+        [],
+      ],
 
       SelectDice: (msg) => {
         const [roll, cmds] = updateRoll(model.roll, msg)
@@ -97,7 +110,11 @@ const view = (model: Model): Html => {
             ['choyaichaiyo [at] gmail [dot] com'],
           ),
           a(
-            [Href('https://github.com/choyai'), Target('_blank'), Class('link')],
+            [
+              Href('https://github.com/choyai'),
+              Target('_blank'),
+              Class('link'),
+            ],
             ['github.com/choyai'],
           ),
         ],
@@ -106,6 +123,11 @@ const view = (model: Model): Html => {
   )
 }
 
+const getRoot = Effect.fromNullable(document.getElementById('root')).pipe(
+  Effect.orDieWith(() => new Error('Missing #root element')),
+)
+
+const container = Effect.runSync(getRoot)
 // RUN
 
 const app = Runtime.makeApplication({
@@ -113,7 +135,7 @@ const app = Runtime.makeApplication({
   init,
   update,
   view,
-  container: document.getElementById('root')!,
+  container,
   browser: {
     onUrlRequest: (request) => LinkClicked.make({ request }),
     onUrlChange: (url) => UrlChanged.make({ url }),

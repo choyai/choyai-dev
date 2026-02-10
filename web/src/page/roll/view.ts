@@ -1,11 +1,31 @@
 import { Option } from 'effect'
 
-import { Class, Html, OnClick, button, div, h1, h2, li, p, span, ul } from '../../html'
+import type { Html } from '../../html'
+import {
+  Class,
+  OnClick,
+  button,
+  div,
+  h1,
+  h2,
+  li,
+  p,
+  span,
+  ul,
+} from '../../html'
 import { RollDice, SelectDice } from './message'
 import type { DiceType, RollModel } from './model'
 import './styles.css'
 
-const diceTypes: ReadonlyArray<DiceType> = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100']
+const diceTypes: ReadonlyArray<DiceType> = [
+  'd4',
+  'd6',
+  'd8',
+  'd10',
+  'd12',
+  'd20',
+  'd100',
+]
 
 export const rollView = (model: RollModel): Html =>
   div(
@@ -21,7 +41,11 @@ export const rollView = (model: RollModel): Html =>
             diceTypes.map((dice) =>
               button(
                 [
-                  Class(model.selectedDice === dice ? 'dice-btn selected' : 'dice-btn'),
+                  Class(
+                    model.selectedDice === dice
+                      ? 'dice-btn selected'
+                      : 'dice-btn',
+                  ),
                   OnClick(SelectDice.make({ dice })),
                 ],
                 [dice.toUpperCase()],
@@ -40,7 +64,10 @@ export const rollView = (model: RollModel): Html =>
           Option.match(model.rollResult, {
             onNone: () => div([Class('result')], []),
             onSome: (result) =>
-              div([Class('result')], [span([Class('result-value')], [String(result)])]),
+              div(
+                [Class('result')],
+                [span([Class('result-value')], [String(result)])],
+              ),
           }),
         ],
       ),

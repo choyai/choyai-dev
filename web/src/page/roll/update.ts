@@ -1,5 +1,5 @@
 import { Effect, Match as M, Option } from 'effect'
-import { Runtime } from 'foldkit'
+import type { Runtime } from 'foldkit'
 import { evo } from 'foldkit/struct'
 
 import { DiceRolled, type RollMessage } from './message'
@@ -36,7 +36,9 @@ export const updateRoll = (
   message: RollMessage,
 ): [RollModel, ReadonlyArray<Runtime.Command<RollMessage>>] =>
   M.value(message).pipe(
-    M.withReturnType<[RollModel, ReadonlyArray<Runtime.Command<RollMessage>>]>(),
+    M.withReturnType<
+      [RollModel, ReadonlyArray<Runtime.Command<RollMessage>>]
+    >(),
     M.tagsExhaustive({
       SelectDice: ({ dice }) => [
         evo(model, {
@@ -51,7 +53,10 @@ export const updateRoll = (
       DiceRolled: ({ result }) => [
         evo(model, {
           rollResult: () => Option.some(result),
-          rollHistory: (history) => [{ dice: model.selectedDice, result }, ...history.slice(0, 9)],
+          rollHistory: (history) => [
+            { dice: model.selectedDice, result },
+            ...history.slice(0, 9),
+          ],
         }),
         [],
       ],

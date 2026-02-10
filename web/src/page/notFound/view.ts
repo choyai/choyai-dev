@@ -1,4 +1,5 @@
-import { Class, Href, Html, a, div, h1, p } from '../../html'
+import type { Html } from '../../html'
+import { Class, Href, a, div, h1, p } from '../../html'
 import { homeRouter } from '../../route'
 
 export const notFoundView = (path: string): Html =>

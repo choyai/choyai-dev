@@ -25,4 +25,7 @@ export const rollRouter = pipe(literal('roll'), Route.mapTo(RollRoute))
 
 const routeParser = Route.oneOf(rollRouter, homeRouter)
 
-export const urlToAppRoute = Route.parseUrlWithFallback(routeParser, NotFoundRoute)
+export const urlToAppRoute = Route.parseUrlWithFallback(
+  routeParser,
+  NotFoundRoute,
+)
