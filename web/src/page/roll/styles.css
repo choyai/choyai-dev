@@ -27,9 +27,13 @@
 }
 
 .dice-btn.selected {
-  background: var(--accent-primary);
-  color: var(--text-dim);
+  background: var(--bg-elevated);
+  color: var(--accent-primary);
   border-color: var(--accent-primary);
+}
+
+.dice-btn.selected:hover {
+  background: var(--bg-surface);
 }
 
 .roll-section {
@@ -40,8 +44,9 @@
 }
 
 .roll-btn {
-  background: var(--accent-primary);
-  color: var(--text-primary);
+  background: var(--bg-elevated);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
   padding: 0.75rem 2rem;
   border: none;
   border-radius: 0.5rem;
@@ -51,7 +56,7 @@
 }
 
 .roll-btn:hover {
-  background: var(--accent-secondary);
+  background: var(--bg-surface);
 }
 
 .result {
@@ -68,9 +73,8 @@
 }
 
 .history {
-  margin-top: 1rem;
   width: 100%;
-  max-width: 300px;
+  height: 100%;
 }
 
 .history-title {

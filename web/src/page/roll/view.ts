@@ -31,7 +31,7 @@ export const rollView = (model: RollModel): Html =>
   div(
     [Class('content')],
     [
-      h1([Class('heading')], ['Dice Roller']),
+      h1([Class('heading')], ['roll some dice']),
       div(
         [Class('dice-selector')],
         [
