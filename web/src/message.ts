@@ -4,6 +4,7 @@ import { ts } from 'foldkit/schema'
 import { Url } from 'foldkit/url'
 
 import { RollMessage } from './page/roll/message'
+import { SceneMessage } from './page/scene/message'
 
 // App-level messages
 
@@ -17,6 +18,12 @@ export type UrlChanged = typeof UrlChanged.Type
 
 // Combined message type
 
-export const Message = S.Union(NoOp, LinkClicked, UrlChanged, RollMessage)
+export const Message = S.Union(
+  NoOp,
+  LinkClicked,
+  UrlChanged,
+  RollMessage,
+  SceneMessage,
+)
 
 export type Message = typeof Message.Type

@@ -13,6 +13,12 @@ import { LinkClicked, NoOp, UrlChanged } from './message'
 import { homeView } from './page/home'
 import { notFoundView } from './page/notFound'
 import { RollModel, initialRollModel, rollView, updateRoll } from './page/roll'
+import {
+  SceneModel,
+  initialSceneModel,
+  sceneView,
+  updateScene,
+} from './page/scene'
 import { AppRoute, urlToAppRoute } from './route'
 import './styles.css'
 
@@ -21,6 +27,7 @@ import './styles.css'
 const Model = S.Struct({
   route: AppRoute,
   roll: RollModel,
+  scene: SceneModel,
 })
 
 type Model = typeof Model.Type
@@ -31,6 +38,7 @@ const init: Runtime.ApplicationInit<Model, Message> = (url: Url) => [
   {
     route: urlToAppRoute(url),
     roll: initialRollModel,
+    scene: initialSceneModel,
   },
   [],
 ]
@@ -83,6 +91,11 @@ const update = (
         const [roll, cmds] = updateRoll(model.roll, msg)
         return [evo(model, { roll: () => roll }), cmds]
       },
+
+      ToggleAnimation: (msg) => {
+        const [scene, cmds] = updateScene(model.scene, msg)
+        return [evo(model, { scene: () => scene }), cmds]
+      },
     }),
   )
 
@@ -93,6 +106,7 @@ const view = (model: Model): Html => {
     M.tagsExhaustive({
       Home: homeView,
       Roll: () => rollView(model.roll),
+      Scene: () => sceneView(model.scene),
       NotFound: ({ path }) => notFoundView(path),
     }),
   )

@@ -1,6 +1,6 @@
 import type { Html } from '../html'
 import { Class, Href, a, li, nav, ul } from '../html'
-import { type AppRoute, homeRouter, rollRouter } from '../route'
+import { type AppRoute, homeRouter, rollRouter, sceneRouter } from '../route'
 import './nav.css'
 
 export const navView = (currentRoute: AppRoute): Html =>
@@ -39,6 +39,22 @@ export const navView = (currentRoute: AppRoute): Html =>
                   ),
                 ],
                 ['roll'],
+              ),
+            ],
+          ),
+          li(
+            [],
+            [
+              a(
+                [
+                  Href(sceneRouter.build({})),
+                  Class(
+                    currentRoute._tag === 'Scene'
+                      ? 'nav-link active'
+                      : 'nav-link',
+                  ),
+                ],
+                ['scene'],
               ),
             ],
           ),

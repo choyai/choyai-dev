@@ -1,0 +1,45 @@
+.scene-page {
+  width: 100%;
+  max-width: 800px;
+}
+
+.canvas-container {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid var(--bg-surface);
+  background: var(--bg-primary);
+}
+
+.canvas-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.scene-controls {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.scene-btn {
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  padding: 0.5rem 1.5rem;
+  border: 1px solid var(--bg-surface);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.scene-btn:hover {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+.scene-btn.active {
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}

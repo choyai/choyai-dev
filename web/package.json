@@ -11,8 +11,10 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@types/three": "^0.182.0",
     "effect": "^3.19.16",
-    "foldkit": "^0.15.0"
+    "foldkit": "^0.15.0",
+    "three": "^0.182.0"
   },
   "devDependencies": {
     "@effect/language-service": "^0.73.0",
