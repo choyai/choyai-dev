@@ -42,22 +42,26 @@ export const navView = (currentRoute: AppRoute): Html =>
               ),
             ],
           ),
-          li(
-            [],
-            [
-              a(
-                [
-                  Href(sceneRouter.build({})),
-                  Class(
-                    currentRoute._tag === 'Scene'
-                      ? 'nav-link active'
-                      : 'nav-link',
-                  ),
-                ],
-                ['scene'],
-              ),
-            ],
-          ),
+          ...(import.meta.env.DEV
+            ? [
+                li(
+                  [],
+                  [
+                    a(
+                      [
+                        Href(sceneRouter.build({})),
+                        Class(
+                          currentRoute._tag === 'Scene'
+                            ? 'nav-link active'
+                            : 'nav-link',
+                        ),
+                      ],
+                      ['scene'],
+                    ),
+                  ],
+                ),
+              ]
+            : []),
         ],
       ),
     ],

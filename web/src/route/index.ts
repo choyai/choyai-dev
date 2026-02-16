@@ -27,7 +27,9 @@ export const rollRouter = pipe(literal('roll'), Route.mapTo(RollRoute))
 
 export const sceneRouter = pipe(literal('scene'), Route.mapTo(SceneRoute))
 
-const routeParser = Route.oneOf(sceneRouter, rollRouter, homeRouter)
+const routeParser = import.meta.env.DEV
+  ? Route.oneOf(sceneRouter, rollRouter, homeRouter)
+  : Route.oneOf(rollRouter, homeRouter)
 
 export const urlToAppRoute = Route.parseUrlWithFallback(
   routeParser,

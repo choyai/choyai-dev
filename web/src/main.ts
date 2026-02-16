@@ -96,6 +96,21 @@ const update = (
         const [scene, cmds] = updateScene(model.scene, msg)
         return [evo(model, { scene: () => scene }), cmds]
       },
+
+      SpawnDie: (msg) => {
+        const [scene, cmds] = updateScene(model.scene, msg)
+        return [evo(model, { scene: () => scene }), cmds]
+      },
+
+      DespawnDie: (msg) => {
+        const [scene, cmds] = updateScene(model.scene, msg)
+        return [evo(model, { scene: () => scene }), cmds]
+      },
+
+      ClearAllDice: (msg) => {
+        const [scene, cmds] = updateScene(model.scene, msg)
+        return [evo(model, { scene: () => scene }), cmds]
+      },
     }),
   )
 
