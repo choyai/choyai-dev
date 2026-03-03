@@ -26,24 +26,24 @@ export const navView = (currentRoute: AppRoute): Html =>
               ),
             ],
           ),
-          li(
-            [],
-            [
-              a(
-                [
-                  Href(rollRouter.build({})),
-                  Class(
-                    currentRoute._tag === 'Roll'
-                      ? 'nav-link active'
-                      : 'nav-link',
-                  ),
-                ],
-                ['roll'],
-              ),
-            ],
-          ),
           ...(import.meta.env.DEV
             ? [
+                li(
+                  [],
+                  [
+                    a(
+                      [
+                        Href(rollRouter.build({})),
+                        Class(
+                          currentRoute._tag === 'Roll'
+                            ? 'nav-link active'
+                            : 'nav-link',
+                        ),
+                      ],
+                      ['roll'],
+                    ),
+                  ],
+                ),
                 li(
                   [],
                   [

@@ -5,6 +5,7 @@ import type { Message } from './message'
 export const {
   a,
   button,
+  br,
   div,
   footer,
   h1,
