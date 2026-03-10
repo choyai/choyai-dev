@@ -1,3 +1,5 @@
 {
-  "m.server": "matrix.choyai.dev:443"
+  "m.homeserver": {
+    "base_url": "matrix.choyai.dev:443"
+  }
 }
